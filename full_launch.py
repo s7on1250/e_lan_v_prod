@@ -524,6 +524,7 @@ def regression(X_test):
     id = X_test['id']
     print(len(X_test))
     X_test = preprocess(X_test, is_train=False, train_df=init_df)
+    X_test.to_csv('check.csv')
     y_pred = model.predict(X_test)
     y_pred_rubles = salary_scaler.inverse_transform(y_pred.reshape(-1,1))
     res = pd.DataFrame(columns=['id','task_type','salary'])
@@ -533,15 +534,8 @@ def regression(X_test):
     return res
 
 def main():
-    # parse arguments
-    parser = argparse.ArgumentParser(description='My CLI tool')
-    parser.add_argument('-job', type=str, required=True, help='path to job test .csv file')
-    parser.add_argument('-sal', type=str, required=True, help='path to sallary test .csv file')
-    parser.add_argument('-sub', type=str, required=True, help='where to save submission .csv file')
-
-    args = parser.parse_args()
-    job_test = pd.read_csv(args.job)
-    sal_test = pd.read_csv(args.sal)
+    job_test = pd.read_csv('data/TEST_RES.csv')
+    sal_test = pd.read_csv('data/TEST_SAL.csv')
 
     # Compute the first task
     job_result = classificatoin(job_test)
@@ -551,7 +545,7 @@ def main():
 
     # Save the result
     submission = pd.concat([job_result, sal_result], axis=0)
-    submission.to_csv(args.sub, index = False)
+    submission.to_csv('submission.csv', index = False)
 
 
 if __name__ == "__main__":
